@@ -1,0 +1,39 @@
+name: Android APK Build
+
+on:
+  push:
+    branches:
+      - main  # or whatever branch you want to trigger the build on
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: '11'
+
+    - name: Download Godot export templates
+      run: |
+        wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz
+        tar -xvf Godot_v4.3-stable_export_templates.tpz -C ~/.local/share/godot/export_templates/
+
+    - name: Download Godot headless binary
+      run: |
+        wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux_headless.64.zip
+        unzip Godot_v4.3-stable_linux_headless.64.zip -d godot-headless
+
+    - name: Export Android APK
+      run: |
+        godot-headless/Godot_v4.3-stable_linux_headless.64 --export-debug android build/output.apk
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: APK
+        path: build/output.apk
