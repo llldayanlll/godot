@@ -16,12 +16,16 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        distribution: 'temurin'  # Specify the Java distribution
+        distribution: 'temurin'
         java-version: '11'
 
     - name: Download Godot export templates
       run: |
-        wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz
+        wget --tries=3 --retry-connrefused https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz
+        if [ $? -ne 0 ]; then
+          echo "Failed to download export templates. Exiting."
+          exit 1
+        fi
         tar -xvf Godot_v4.3-stable_export_templates.tpz -C ~/.local/share/godot/export_templates/
 
     - name: Download Godot headless binary
@@ -38,3 +42,4 @@ jobs:
       with:
         name: APK
         path: build/output.apk
+
