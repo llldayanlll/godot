@@ -33,7 +33,7 @@ jobs:
         godot-headless/Godot_v4.3-stable_linux_headless.64 --export-debug android build/output.apk
 
     - name: Upload APK
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: APK
         path: build/output.apk
