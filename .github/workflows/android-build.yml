@@ -3,7 +3,7 @@ name: Android APK Build
 on:
   push:
     branches:
-      - master  # or whatever branch you want to trigger the build on
+      - master  # Changed to master as per your setup
 
 jobs:
   build:
@@ -16,6 +16,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
+        distribution: 'temurin'  # Specify the Java distribution
         java-version: '11'
 
     - name: Download Godot export templates
