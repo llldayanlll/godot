@@ -1,0 +1,60 @@
+[gd_scene load_steps=9 format=3 uid="uid://bjse65ygi71p2"]
+
+[ext_resource type="PackedScene" uid="uid://bfbbrfd0m6a6r" path="res://ok.tscn" id="1_yj3dg"]
+[ext_resource type="Texture2D" uid="uid://lxem6iavlwuf" path="res://texture.png" id="2_dora0"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sm8ie"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_arsi1"]
+sky_material = SubResource("ProceduralSkyMaterial_sm8ie")
+
+[sub_resource type="Environment" id="Environment_uc7qq"]
+background_mode = 2
+sky = SubResource("Sky_arsi1")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6u3x6"]
+albedo_color = Color(0.953807, 0.845024, 0.96306, 1)
+albedo_texture = ExtResource("2_dora0")
+albedo_texture_force_srgb = true
+roughness_texture_channel = 4
+normal_enabled = true
+normal_scale = 16.0
+uv1_scale = Vector3(2000, 2000, 2000)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_sdmd0"]
+material = SubResource("StandardMaterial3D_6u3x6")
+size = Vector2(10000, 10000)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_66jtd"]
+data = PackedVector3Array(5000, 0, 5000, -5000, 0, 5000, 5000, 0, -5000, -5000, 0, 5000, -5000, 0, -5000, 5000, 0, -5000)
+
+[node name="Node3D" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 0.996036, 0.0889464, 0, -0.0889464, 0.996036, 0.00103545, 0.011393, -0.00765824)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_uc7qq")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="RigidBody3D" parent="." instance=ExtResource("1_yj3dg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -2)
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 34.8613, 3.11313)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_sdmd0")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_66jtd")
