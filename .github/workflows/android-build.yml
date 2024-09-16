@@ -16,7 +16,7 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin' # Install the Eclipse Temurin distribution of the JDK
+          distribution: 'temurin'
           java-version: '17'
 
       - name: Download Godot Linux 64-bit
@@ -27,17 +27,13 @@ jobs:
       - name: Download Godot export templates
         run: |
           wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz
-          mv Godot_v4.3-stable_export_templates.tpz Godot_v4.3-stable_export_templates.zip
           
-      - name: Create export templates directory
-        run: |
-          mkdir -p ~/.local/share/godot/export_templates
-
       - name: Extract Godot export templates
         run: |
-          tar -xvf Godot_v4.3-stable_export_templates.zip -d ~/.local/share/godot/export_templates
+          mkdir -p ~/.local/share/godot/export_templates
+          tar -xvf Godot_v4.3-stable_export_templates.tpz -C ~/.local/share/godot/export_templates
 
-      - name: Set up Android SDK
+      - name: Install Android SDK
         run: |
           sudo apt-get update
           sudo apt-get install -y android-sdk
