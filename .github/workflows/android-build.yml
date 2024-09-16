@@ -24,7 +24,8 @@ jobs:
           mkdir -p ~/.local/share/godot/export_templates
           wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz -O ~/godot/Godot_v4.3-stable_export_templates.tpz
           cd ~/.local/share/godot/export_templates
-          tar -xzf ~/godot/Godot_v4.3-stable_export_templates.tpz
+          # Unzip if the file is actually a zip archive
+          unzip ~/godot/Godot_v4.3-stable_export_templates.tpz
 
       - name: Set up Android SDK
         run: |
@@ -36,4 +37,3 @@ jobs:
       - name: Build and Export Project
         run: |
           ~/godot/Godot_v4.3-stable_linux.x86_64 --headless --export-debug "Android" build/output.apk
-
