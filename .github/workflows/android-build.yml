@@ -3,7 +3,7 @@ name: Android APK Build
 on:
   push:
     branches:
-      - master  # Changed to master as per your setup
+      - master  # Make sure to use the correct branch (e.g., master)
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
 
     - name: Download Godot export templates
       run: |
-        wget --tries=3 --retry-connrefused https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz
+        wget --continue --timeout=60 --tries=10 --retry-connrefused https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz
         if [ $? -ne 0 ]; then
           echo "Failed to download export templates. Exiting."
           exit 1
@@ -42,4 +42,3 @@ jobs:
       with:
         name: APK
         path: build/output.apk
-
