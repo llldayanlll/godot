@@ -1,66 +1,39 @@
-name: Build Godot Project for Android
+name: Build and Export Godot Project
 
 on:
   push:
     branches:
-      - master
+      - master # Adjust if your main branch is named differently
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code from the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up environment
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'adopt'
-          java-version: '17'
-
-      # Install necessary tools and libraries
-      - name: Install required packages
-        run: sudo apt-get update && sudo apt-get install -y wget unzip
-
-      # Download Godot binary and export templates
-      - name: Download Godot and export templates
+      - name: Set up Godot
         run: |
-          # Download Godot binary
-          wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux.x86_64.zip
-          unzip Godot_v4.3-stable_linux.x86_64.zip -d godot-linux
+          mkdir -p ~/godot
+          wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux.x86_64.zip -O ~/godot/Godot_v4.3-stable_linux.x86_64.zip
+          unzip ~/godot/Godot_v4.3-stable_linux.x86_64.zip -d ~/godot
 
-          # Download export templates
-          wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz
-
-          # Verify the file is not empty and is a valid .tpz file
-          file Godot_v4.3-stable_export_templates.tpz
-
-          # Create directory for export templates
+      - name: Set up Export Templates
+        run: |
           mkdir -p ~/.local/share/godot/export_templates
+          wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz -O ~/godot/Godot_v4.3-stable_export_templates.tpz
+          cd ~/.local/share/godot/export_templates
+          tar -xzf ~/godot/Godot_v4.3-stable_export_templates.tpz
 
-          # Rename tpz to zip and extract
-          mv Godot_v4.3-stable_export_templates.tpz Godot_v4.3-stable_export_templates.zip
-          unzip Godot_v4.3-stable_export_templates.zip -d ~/.local/share/godot/export_templates
-
-      # Set up Android SDK (if needed, adapt as necessary)
       - name: Set up Android SDK
         run: |
-          echo "ANDROID_HOME=/usr/local/android-sdk" >> $GITHUB_ENV
-          sudo apt-get install -y android-sdk
-          sudo apt-get install -y adb
+          echo "SDK Path: ${{ secrets.ANDROID_SDK_PATH }}"
+          export ANDROID_HOME=${{ secrets.ANDROID_SDK_PATH }}
+          export PATH=$PATH:$ANDROID_HOME/platform-tools
+          export PATH=$PATH:$ANDROID_HOME/build-tools/30.0.3
 
-      # Export the Godot project for Android
-      - name: Export Godot Project
+      - name: Build and Export Project
         run: |
-          godot-linux/Godot_v4.3-stable_linux.x86_64 --headless --export-debug "Android" build/output.apk
-
-      # Upload APK as artifact
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: output-apk
-          path: build/output.apk
+          ~/godot/Godot_v4.3-stable_linux.x86_64 --headless --export-debug "Android" build/output.apk
 
