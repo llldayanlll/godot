@@ -23,7 +23,7 @@ jobs:
 
       # Install necessary tools and libraries
       - name: Install required packages
-        run: sudo apt-get update && sudo apt-get install -y wget tar unzip
+        run: sudo apt-get update && sudo apt-get install -y wget unzip
 
       # Download Godot binary and export templates
       - name: Download Godot and export templates
@@ -35,11 +35,15 @@ jobs:
           # Download export templates
           wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz
 
+          # Verify the file is not empty and is a valid .tpz file
+          file Godot_v4.3-stable_export_templates.tpz
+
           # Create directory for export templates
           mkdir -p ~/.local/share/godot/export_templates
 
-          # Extract export templates
-          tar -xvf Godot_v4.3-stable_export_templates.tpz -C ~/.local/share/godot/export_templates
+          # Rename tpz to zip and extract
+          mv Godot_v4.3-stable_export_templates.tpz Godot_v4.3-stable_export_templates.zip
+          unzip Godot_v4.3-stable_export_templates.zip -d ~/.local/share/godot/export_templates
 
       # Set up Android SDK (if needed, adapt as necessary)
       - name: Set up Android SDK
@@ -59,3 +63,4 @@ jobs:
         with:
           name: output-apk
           path: build/output.apk
+
