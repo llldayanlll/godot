@@ -28,6 +28,13 @@ jobs:
         run: |
           wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz
           mv Godot_v4.3-stable_export_templates.tpz Godot_v4.3-stable_export_templates.zip
+          
+      - name: Create export templates directory
+        run: |
+          mkdir -p ~/.local/share/godot/export_templates
+
+      - name: Extract Godot export templates
+        run: |
           unzip Godot_v4.3-stable_export_templates.zip -d ~/.local/share/godot/export_templates
 
       - name: Export Android APK
