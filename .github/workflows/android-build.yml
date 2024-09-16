@@ -1,39 +1,36 @@
-name: Build and Export Godot Project
+name: Android APK Build
 
 on:
   push:
     branches:
-      - master # Adjust if your main branch is named differently
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up Godot
-        run: |
-          mkdir -p ~/godot
-          wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux.x86_64.zip -O ~/godot/Godot_v4.3-stable_linux.x86_64.zip
-          unzip ~/godot/Godot_v4.3-stable_linux.x86_64.zip -d ~/godot
+    - name: Download Godot 3.6 export templates
+      run: |
+        wget https://downloads.tuxfamily.org/godotengine/3.6/Godot_v3.6-stable_export_templates.tpz
+        mkdir -p ~/.local/share/godot/export_templates
+        mv Godot_v3.6-stable_export_templates.tpz Godot_v3.6-stable_export_templates.zip
+        unzip Godot_v3.6-stable_export_templates.zip -d ~/.local/share/godot/export_templates/
 
-      - name: Set up Export Templates
-        run: |
-          mkdir -p ~/.local/share/godot/export_templates
-          wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz -O ~/godot/Godot_v4.3-stable_export_templates.tpz
-          cd ~/.local/share/godot/export_templates
-          # Unzip if the file is actually a zip archive
-          unzip ~/godot/Godot_v4.3-stable_export_templates.tpz
+    - name: Download Godot 3.6 Linux server
+      run: |
+        wget https://downloads.tuxfamily.org/godotengine/3.6/Godot_v3.6-stable_linux_server.64.zip
+        unzip Godot_v3.6-stable_linux_server.64.zip -d godot-linux
 
-      - name: Set up Android SDK
-        run: |
-          echo "SDK Path: ${{ secrets.ANDROID_SDK_PATH }}"
-          export ANDROID_HOME=${{ secrets.ANDROID_SDK_PATH }}
-          export PATH=$PATH:$ANDROID_HOME/platform-tools
-          export PATH=$PATH:$ANDROID_HOME/build-tools/30.0.3
+    - name: Export Android APK
+      run: |
+        godot-linux/Godot_v3.6-stable_linux_server.64 --export-debug android build/output.apk
 
-      - name: Build and Export Project
-        run: |
-          ~/godot/Godot_v4.3-stable_linux.x86_64 --headless --export-debug "Android" build/output.apk
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: APK
+        path: build/output.apk
