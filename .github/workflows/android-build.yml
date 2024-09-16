@@ -35,7 +35,7 @@ jobs:
 
       - name: Extract Godot export templates
         run: |
-          unzip Godot_v4.3-stable_export_templates.zip -d ~/.local/share/godot/export_templates
+          tar -xvf Godot_v4.3-stable_export_templates.zip -d ~/.local/share/godot/export_templates
 
       - name: Set up Android SDK
         run: |
