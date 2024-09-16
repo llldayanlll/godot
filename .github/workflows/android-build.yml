@@ -38,12 +38,12 @@ jobs:
 
     - name: Download Godot headless binary
       run: |
-        wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux_headless.64.zip
-        unzip Godot_v4.3-stable_linux_headless.64.zip -d godot-headless
+        wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux_server.64.zip
+        unzip Godot_v4.3-stable_linux_server.64.zip -d godot-headless
 
     - name: Export Android APK
       run: |
-        godot-headless/Godot_v4.3-stable_linux_headless.64 --export-debug android build/output.apk
+        godot-headless/Godot_v4.3-stable_linux_server.64 --export-debug android build/output.apk
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
