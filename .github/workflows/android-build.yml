@@ -3,7 +3,7 @@ name: Android APK Build
 on:
   push:
     branches:
-      - master  # Make sure to use the correct branch (e.g., master)
+      - master  # Adjust to your main branch
 
 jobs:
   build:
@@ -26,7 +26,11 @@ jobs:
           echo "Failed to download export templates. Exiting."
           exit 1
         fi
-        tar -xvf Godot_v4.3-stable_export_templates.tpz -C ~/.local/share/godot/export_templates/
+
+    - name: Rename and unzip export templates
+      run: |
+        mv Godot_v4.3-stable_export_templates.tpz Godot_v4.3-stable_export_templates.zip
+        unzip Godot_v4.3-stable_export_templates.zip -d ~/.local/share/godot/export_templates/
 
     - name: Download Godot headless binary
       run: |
