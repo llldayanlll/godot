@@ -36,14 +36,14 @@ jobs:
         mv Godot_v4.3-stable_export_templates.tpz Godot_v4.3-stable_export_templates.zip
         unzip Godot_v4.3-stable_export_templates.zip -d ~/.local/share/godot/export_templates/
 
-    - name: Download Godot headless binary
+    - name: Download Godot X11 build
       run: |
-        wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux_server.64.zip
-        unzip Godot_v4.3-stable_linux_server.64.zip -d godot-headless
+        wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux_x11.64.zip
+        unzip Godot_v4.3-stable_linux_x11.64.zip -d godot-x11
 
     - name: Export Android APK
       run: |
-        godot-headless/Godot_v4.3-stable_linux_server.64 --export-debug android build/output.apk
+        godot-x11/Godot_v4.3-stable_linux_x11.64 --export-debug android build/output.apk
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
