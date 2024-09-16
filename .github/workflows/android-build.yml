@@ -1,42 +1,41 @@
-name: Build Godot Android APK
+name: Godot Android Build
 
 on:
   push:
     branches:
-      - master # Change to your default branch name if different
-  pull_request:
+      - master  # or 'main' if you're using the main branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
-          distribution: 'temurin'
+          distribution: 'temurin' # Install the Eclipse Temurin distribution of the JDK
+          java-version: '17'
 
-      - name: Download Godot Linux Headless
+      - name: Download Godot Linux 64-bit
         run: |
           wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux.x86_64.zip
-          unzip Godot_v4.3-stable_linux.x86_64.zip -d godot-linux/
+          unzip Godot_v4.3-stable_linux.x86_64.zip -d godot-linux
 
-      - name: Download Godot Export Templates
+      - name: Download Godot export templates
         run: |
           wget https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_export_templates.tpz
           mkdir -p ~/.local/share/godot/export_templates
-          mv Godot_v4.3-stable_export_templates.tpz Godot_v4.3-stable_export_templates.zip
-          unzip Godot_v4.3-stable_export_templates.zip -d ~/.local/share/godot/export_templates/
+          tar -xf Godot_v4.3-stable_export_templates.tpz -C ~/.local/share/godot/export_templates
 
       - name: Export Android APK
         run: |
-          godot-linux/Godot_v4.3-stable_linux.x86_64 --headless --export-debug android build/output.apk
+          godot-linux/Godot_v4.3-stable_linux.x86_64 --headless --export-debug "Android" build/output.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
-          name: android-apk
+          name: Android APK
           path: build/output.apk
